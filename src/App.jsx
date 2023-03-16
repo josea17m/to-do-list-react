@@ -1,13 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AddTask from "./components/AddTask";
 import Task from "./components/Task";
 import Header from "./components/Header";
 import Message from "./components/Message";
 
 function App() {
-  const [task, setTask] = useState("");
-  const [completedTasks, setCompletedTasks] = useState("");
-  const [unCompletedTasks, setUncompletedTasks] = useState("");
+  const [task, setTask] = useState(
+    localStorage.getItem("task") ? JSON.parse(localStorage.getItem("task")) : []
+  );
+
+  const [completedTasks, setCompletedTasks] = useState(
+    localStorage.getItem("completedTasks")
+      ? JSON.parse(localStorage.getItem("completedTasks"))
+      : []
+  );
+
+  const [unCompletedTasks, setUncompletedTasks] = useState(
+    localStorage.getItem("unCompletedTasks")
+      ? JSON.parse(localStorage.getItem("unCompletedTasks"))
+      : []
+  );
+
   const [error, setError] = useState(false);
   const [reset, setReset] = useState(false);
 
@@ -24,9 +37,20 @@ function App() {
     setUncompletedTasks([...unCompletedTasks, newtTask]);
   };
 
+  useEffect(() => {
+    localStorage.setItem("task", JSON.stringify(task));
+  }, [task]);
+
+  useEffect(() => {
+    localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
+  }, [completedTasks]);
+
+  useEffect(() => {
+    localStorage.setItem("unCompletedTasks", JSON.stringify(unCompletedTasks));
+  }, [unCompletedTasks]);
+
   //Completar las tareas y evitar que se agreguen tareas previamente completadas
   const checkTask = (task) => {
-    task.completed = true;
     if (!completedTasks.includes("")) {
       //Inicio If completedTasks no esta vacio
       if (!completedTasks.some((t) => task.id == t.id)) {
@@ -85,6 +109,9 @@ function App() {
           completedTasks={completedTasks}
           DeleteAll={DeleteAll}
         />
+        {/* <Login />
+        <Logout />
+        <Profile /> */}
         <main className="p-2 flex flex-col">
           {error && (
             <Message
@@ -116,7 +143,6 @@ function App() {
                 <Task
                   checkTask={checkTask}
                   deleteTask={deleteTask}
-                  setCompletedTasks={setCompletedTasks}
                   completedTasks={completedTasks}
                   key={tasks.id}
                   tasks={tasks}

@@ -1,15 +1,18 @@
 import Button from "./Button";
 
-const Task = ({ tasks, deleteTask, checkTask }) => {
-  const { taskName, completed } = tasks;
+const Task = ({ tasks, deleteTask, checkTask, completedTasks }) => {
+  const { taskName } = tasks;
+
+  const completedTrueOrFalse = completedTasks.some((t) => t.id === tasks.id);
+
   return (
     <div
       className={`flex justify-between  border-l-8 bg-[#a2c7e9] ${
-        !completed ? "border-gray-500 " : "border-green-500 "
+        !completedTrueOrFalse ? "border-gray-500 " : "border-green-500 "
       } rounded-2xl mx-2 my-4`}
     >
       <p className="bg-[#a2c7e9] w-1/2 p-3 mx-4 my-auto">{taskName}</p>
-      <div className="w-1/4 h-full text-center flex flex-row my-auto">
+      <div className="w-1/4 h-full text-center flex flex-row">
         <div className="bg-green-500 w-full h-full md:duration-100 md:hover:rounded-2xl md:hover:scale-105">
           <Button
             image={"../public/check.png"}
